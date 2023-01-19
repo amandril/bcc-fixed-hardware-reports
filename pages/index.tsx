@@ -1,20 +1,18 @@
 import Image from "next/image";
-import logo from "../src/logo.svg";
+import allReports from "./allReports";
 
 function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <Image
+                {/* <Image
                     src={logo}
                     className="App-logo"
                     width={200}
                     height={200}
                     alt="logo"
-                />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
+                /> */}
+                
 
                 <a
                     className="App-link"
