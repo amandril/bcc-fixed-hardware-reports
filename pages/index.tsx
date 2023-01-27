@@ -20,7 +20,7 @@ function App() {
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Learn React
+                    BCC Fixed Hardware Reports
                 </a>
             </header>
         </div>
