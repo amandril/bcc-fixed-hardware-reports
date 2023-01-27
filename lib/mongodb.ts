@@ -19,6 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 } else {
     client = new MongoClient(uri)
     clientPromise = client.connect()
+    console.log('Mongo client connect promise formed', uri)
 }
 
 export default clientPromise
