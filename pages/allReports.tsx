@@ -19,6 +19,7 @@ export async function getServerSideProps(context: any) {
             "Content-Type": "application/json",
         },
     });
+    console.log(res)
     let allReports = await res.json();
 
     return {
