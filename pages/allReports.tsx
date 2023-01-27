@@ -11,7 +11,7 @@ export default function allReports({allReports}) {
     )
 }
 
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: any) {
     let res = await fetch("http://localhost:3000/api/reports", {
         method: "GET",
         headers: {
