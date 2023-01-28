@@ -1,12 +1,12 @@
 # BCC Fixed Hardware Reports
 
 ## API
-### GET /v1/routes
+### GET /v1/reports
 ```
 curl -i http://localhost:3000/api/v1/reports
 ```
 
-### POST /v1/routes
+### POST /v1/reports
 Happy request:
 ```
 curl -X POST http://localhost:3000/api/v1/reports \
