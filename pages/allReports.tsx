@@ -13,7 +13,7 @@ export default function allReports({allReports}) {
 
 export async function getServerSideProps(context: any) {
     const baseURL = process.env.BASE_URL || "http://localhost:3000"
-    let res = await fetch(`${baseURL}/api/reports`, {
+    let res = await fetch(`${baseURL}/api/v1/reports`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

@@ -7,7 +7,8 @@ export default function Report ( {report} ) {
             <div>Area: {report.area}</div>
             <div>Crag: {report.crag}</div>
             <div>Route: {report.route}</div>
-            <div>Hardware Type: {report.hardwareType}</div>
+            <div>Assessed At: {report.assessed_at}</div>
+            <div>Hardware Type: {report.hardwareType || report.hardware_type}</div>
             <div>Description: {report.description}</div>
         </div>
     )
