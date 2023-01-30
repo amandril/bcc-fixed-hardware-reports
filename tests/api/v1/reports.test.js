@@ -37,7 +37,6 @@ describe('/v1/reports', () => {
   });
 
   describe('POST request', () => {
-
     it('inserts data when receiving well-formed body', async () => {
       const reportBody = {
         climb: "111222333",
@@ -76,7 +75,7 @@ describe('/v1/reports', () => {
       await reportHandler(req, res)
       expect(res._getStatusCode()).toBe(400);
       expect(JSON.parse(res._getData())["error"]).toEqual(
-        expect.objectContaining({ climb: "Required parameter missing."}),
+        expect.objectContaining({climb: "Required parameter missing."}),
       );
       // No data written.
       const allReports = await db.collection("reports").find({}).toArray()
