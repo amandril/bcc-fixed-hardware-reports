@@ -6,6 +6,7 @@ export default async function handler(req, res) {
   const db = client.db("test");
   switch (req.method) {
     case "POST":
+      // console.log('[POST /v1/reports] Handling', req.body)
       const { params, errMsgs } = parseParams(req.body)
       if (Object.keys(errMsgs).length != 0) {
         res.status(400).json({ error: errMsgs })
@@ -16,7 +17,7 @@ export default async function handler(req, res) {
         _id: generatedId, // Override Mongo's automatically generated id with our own public-facing one.
         ...params
       }
-      // Attempt DB write.
+      // console.log('[POST /v1/reports] Attempting DB write')
       try {
         const insertRes = await db.collection("reports").insertOne(idedParams);
         if (!insertRes.acknowledged) {
