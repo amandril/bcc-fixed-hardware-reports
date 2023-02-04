@@ -39,7 +39,7 @@ export default function ReportForm({reportMethod}) {
         <form className={styles.hardwareForm}
         onSubmit={async (e) => {
             e.preventDefault();
-            reportMethod(report)
+            await reportMethod(report)
             clearForm();
             Router.push({
                 pathname: `../allReports`,
