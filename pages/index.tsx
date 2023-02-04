@@ -1,5 +1,6 @@
 import Image from "next/image";
 import allReports from "./allReports";
+import Link from "next/link";
 
 function App() {
     return (
@@ -13,15 +14,11 @@ function App() {
                     alt="logo"
                 /> */}
                 
+                <div className="pageList">
+                    <Link href="./allReports">View All Reports</Link>
+                    <Link href="./newReport">Create New Report</Link>
+                </div>
 
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    BCC Fixed Hardware Reports
-                </a>
             </header>
         </div>
     );

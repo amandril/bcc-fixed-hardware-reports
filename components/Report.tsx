@@ -9,6 +9,7 @@ export default function Report ( {report} ) {
             <div>Route: {report.route}</div>
             <div>Hardware Type: {report.hardwareType}</div>
             <div>Description: {report.description}</div>
+            <div>Date: {report.timestamp}</div>
         </div>
     )
 }

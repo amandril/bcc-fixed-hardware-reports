@@ -1,15 +1,12 @@
 import useForm from '../lib/useForm';
 import styles from '../styles/formStyles.module.css';
+import Router from 'next/router';
 
-export default function ReportForm() {
-    
-    const handleSubmit = (e) => {
-        console.log("Event: ", e);
-    };
+export default function ReportForm({reportMethod}) {
 
     const { inputs, handleChange, clearForm, resetForm } = useForm({
         // Initial values we provide the form
-        name: "", 
+        name: "",
         email: "",
         reportedHardware: "",
         where: "",
@@ -18,17 +15,35 @@ export default function ReportForm() {
         image: ""
     });
 
+    type HardwareReport = {
+        name: string,
+        email: string,
+        reportedHardware: string,
+        where: string,
+        problem: string,
+        description: string,
+        timestamp: Date,
+    }
+
+    let report: HardwareReport = {
+        name: inputs.name,
+        email: inputs.email,
+        reportedHardware: inputs.reportedHardware,
+        where: inputs.where,
+        problem: inputs.problem,
+        description: inputs.description,
+        timestamp: new Date()
+    }
+
     return (
-        // <form onSubmit={handleSubmit}>
-        //     <label htmlFor="name">Name</label>
-        //     <input type="text" name="name" />
-        //     <button type="submit" name="submit">Submit</button>
-        // </form>
-        
         <form className={styles.hardwareForm}
         onSubmit={async (e) => {
             e.preventDefault();
-            handleSubmit(e);
+            reportMethod(report)
+            clearForm();
+            Router.push({
+                pathname: `../allReports`,
+            });
         }}>
             <fieldset>
                 <label htmlFor="name">
@@ -133,6 +148,7 @@ export default function ReportForm() {
             </fieldset>
 
             <button type="submit">Submit Report</button>
+            <button type="reset" onClick={resetForm}>Reset Form</button>
         </form>
     )
 }

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       console.log('Mongo POST request made')
       let bodyObject = JSON.parse(req.body);
       let report = await db.collection("reports").insertOne(bodyObject);
-      res.json(report.ops[0]);
+      res.json(report);
       break;
     case "GET":
       console.log('Mongo GET request made')
