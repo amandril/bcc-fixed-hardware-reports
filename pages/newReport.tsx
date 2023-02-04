@@ -10,7 +10,6 @@ export async function postReport(data = {}) {
     const baseURL = process.env.BASE_URL || "http://localhost:3000"
     await fetch(`${baseURL}/api/reports`, {
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
