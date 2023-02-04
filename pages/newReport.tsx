@@ -8,8 +8,10 @@ export default function newReportPage() {
 
 export async function postReport(data = {}) {
     const baseURL = process.env.BASE_URL || "http://localhost:3000"
+    console.log(baseURL);
     await fetch(`${baseURL}/api/reports`, {
       method: 'POST',
+      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
