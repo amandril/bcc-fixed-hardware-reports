@@ -10,6 +10,7 @@ export default function Report ( {report} ) {
             <div>Assessed At: {report.assessed_at}</div>
             <div>Hardware Type: {report.hardwareType || report.hardware_type}</div>
             <div>Description: {report.description}</div>
+            <div>Date: {report.timestamp}</div>
         </div>
     )
 }

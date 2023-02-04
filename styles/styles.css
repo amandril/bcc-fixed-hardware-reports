@@ -6,3 +6,7 @@ body {
 .report {
   margin: 1rem 0;
 }
+
+.pageList {
+  display: grid;
+}

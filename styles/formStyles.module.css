@@ -1,0 +1,51 @@
+form.hardwareForm {
+    display:grid;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+form.hardwareForm fieldset {
+    display: grid;
+    /* width: 600px; */
+    border: none;
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+form.hardwareForm label {
+    display: grid;
+    gap: 1rem;
+}
+
+form.hardwareForm input {
+    padding: 1rem;
+    background-color: lightgray;
+    border-radius: 10px;
+    border: none;
+}
+
+form.hardwareForm select {
+    display: block;
+    padding: 3rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+    border: none;
+    height: 50px;
+    background-color: lightgray;
+}
+
+form.hardwareForm .caption {
+    color: gray;
+    font-size: .8rem;
+    text-align: left;
+}
+
+form.hardwareForm textArea {
+    min-height: 10rem;
+    padding: 1rem;
+    font-size: 1rem;
+    border: none;
+    background-color: lightgray;
+    border-radius: 10px;
+}
