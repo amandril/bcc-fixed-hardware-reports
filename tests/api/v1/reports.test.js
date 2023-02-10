@@ -39,7 +39,7 @@ describe('/v1/reports', () => {
   describe('POST request', () => {
     it('inserts data when receiving well-formed body', async () => {
       const reportBody = {
-        climb: "111222333",
+        mp_climb_id: "111222333",
         hardware_type: "bolt",
         assessed_at: 1234567890,
         description: "rusty spinning bolt"
@@ -63,19 +63,39 @@ describe('/v1/reports', () => {
     })
 
     it('throws 400 when encountering missing required fields', async () => {
-      const reportBodyMissingRequiredClimb = {
+      const reportBodyMissingAssessedAt = {
+        mp_climb_id: "111222333",
+        hardware_type: "bolt",
+        description: "rusty spinning bolt"
+      }
+      const { req, res } = createMocks({
+        method: 'POST',
+        body: reportBodyMissingAssessedAt
+      });
+      await reportHandler(req, res)
+      expect(res._getStatusCode()).toBe(400);
+      expect(JSON.parse(res._getData())["error"]).toEqual(
+        expect.objectContaining({assessed_at: "Required parameter missing."}),
+      );
+      // No data written.
+      const allReports = await db.collection("reports").find({}).toArray()
+      expect(allReports.length).toBe(0)
+    })
+
+    it('throws 400 when no climb_ids are submitted', async () => {
+      const reportBodyMissingClimbIds = {
         hardware_type: "bolt",
         assessed_at: 1234567890,
         description: "rusty spinning bolt"
       }
       const { req, res } = createMocks({
         method: 'POST',
-        body: reportBodyMissingRequiredClimb
+        body: reportBodyMissingClimbIds
       });
       await reportHandler(req, res)
       expect(res._getStatusCode()).toBe(400);
       expect(JSON.parse(res._getData())["error"]).toEqual(
-        expect.objectContaining({climb: "Required parameter missing."}),
+        expect.objectContaining({additional_errors: ["At least one climb_id must be provided."]}),
       );
       // No data written.
       const allReports = await db.collection("reports").find({}).toArray()

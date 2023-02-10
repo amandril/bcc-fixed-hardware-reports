@@ -47,6 +47,7 @@ export default async function handler(req, res) {
 function parseParams(bodyObject) {
   let validatedParams = {};
   let validationErrMsgs = {};
+  // Param-wise validation.
   for (let param of postParams) {
     const value = bodyObject[param.name];
     if (value === undefined) { // Param missing.
@@ -55,10 +56,18 @@ function parseParams(bodyObject) {
       }
       continue;
     }
-    if (param.validationFn(value)) {
+    if (param.validate(value)) {
       validatedParams[param.name] = value
     } else {
       validationErrMsgs[param.name] = param.validationErrMsg
+    }
+  }
+  // Combination validations.
+  for (let v of additionalValidations) {
+    if (!v.validate(validatedParams)) {
+      validationErrMsgs['additional_errors'] = [
+        ...(validationErrMsgs['additional_errors'] || []), v.errMsg
+      ]
     }
   }
   return {params: validatedParams, errMsgs: validationErrMsgs}
@@ -67,7 +76,7 @@ function parseParams(bodyObject) {
 interface Param {
   name: string,
   required: boolean,
-  validationFn: (value: any) => boolean,
+  validate: (value: any) => boolean,
   validationErrMsg: string,
 }
 
@@ -76,28 +85,34 @@ class Param {
   constructor(data: Param) {
     this.name = data.name;
     this.required = data.required;
-    this.validationFn = data.validationFn;
+    this.validate = data.validate;
     this.validationErrMsg = data.validationErrMsg;
   }
 }
 
 const postParams = [
   new Param({
-    name: 'climb',
-    required: true,
-    validationFn: val => val.length >= 8 && val.length <= 12, // MountainProject IDs tend to be 9 numeric chars.
+    name: 'mp_climb_id',
+    required: false,
+    validate: val => val.length >= 8 && val.length <= 12, // MountainProject IDs tend to be 9 numeric chars.
     validationErrMsg: "Expecting string that is between 8 and 12 characters long."
+  }),
+  new Param({
+    name: 'ob_climb_id',
+    required: false,
+    validate: val => val.length == 36, // Openbeta uses uuid-mongdb's MUUIDs.
+    validationErrMsg: "Expecting string that is 36 characters long."
   }),
   new Param({
     name: 'hardware_type',
     required: true,
-    validationFn: (val: string) => ['bolt', 'pin', 'webbing', 'other'].includes(val),
+    validate: (val: string) => ['bolt', 'pin', 'webbing', 'other'].includes(val),
     validationErrMsg: "Should be one of {'bolt', 'pin', 'webbing', 'other'}."
   }),
   new Param({
     name: 'assessed_at',
     required: true,
-    validationFn: (val: number) => Number.isInteger(val) &&
+    validate: (val: number) => Number.isInteger(val) &&
       val >= 1_000_000_000 && // Sep 2001
       val < 10_000_000_000,   // Nov 2286
     validationErrMsg: "Should be a 10 digit Unix timestamp."
@@ -105,19 +120,34 @@ const postParams = [
   new Param({
     name: 'description',
     required: false,
-    validationFn: (val: string) => val.length <= 1024,
+    validate: (val: string) => val.length <= 1024,
     validationErrMsg: "Should be 1024 characters or shorter."
   }),
   new Param({
     name: 'email',
     required: false,
-    validationFn: (val: string) => val.length <= 64,
+    validate: (val: string) => val.length <= 64,
     validationErrMsg: "Should be 64 characters or shorter."
   }),
   new Param({
     name: 'phone',
     required: false,
-    validationFn: (val: string) => val.length <= 16, // Might need better phone number validation.
+    validate: (val: string) => val.length <= 16, // Might need better phone number validation.
     validationErrMsg: "Should be 16 characters or shorter."
   }),
+]
+
+interface AdditionalValidation {
+  errMsg: string;
+  validate: (paramValues: any) => boolean;
+}
+
+const additionalValidations: AdditionalValidation[] = [
+  {
+    errMsg: 'At least one climb_id must be provided.',
+    validate: (paramValues) => {
+      return (paramValues['mp_climb_id'] !== undefined 
+        || paramValues['ob_climb_id'] !== undefined)
+    }
+  }
 ]
