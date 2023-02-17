@@ -20,6 +20,15 @@ curl -X POST http://localhost:3000/api/v1/reports \
   -d '{"climb":"111222333","hardware_type":"bad_bolt","description":"rusty spinning bolt"}' 
 ```
 
+### POST /v1/files
+Happy request:
+For now, images have to be under 1MB otherwise NextJS will error out.
+```
+curl -X POST http://localhost:3000/api/v1/files \
+  -F 'files=@/Users/kao/Downloads/1.jpg' \
+  -F 'report_id=rept_2222333344445555666677'
+```
+
 ## Development
 `cd ~/bcc-fixed-hardware-reports` to get into the base folder.
 `npm install` to install dependencies.

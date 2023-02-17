@@ -60,6 +60,7 @@ describe('/v1/reports', () => {
       expect(allReports[0]).toEqual(
         expect.objectContaining(reportBody)
       )
+      expect(allReports[0]._id).toHaveLength(5 + 22) // 'rept_' + 22 other v4 uuid chars
     })
 
     it('throws 400 when encountering missing required fields', async () => {

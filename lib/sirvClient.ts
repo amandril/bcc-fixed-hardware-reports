@@ -27,7 +27,7 @@ const _validateTokenParams = ({ clientId, clientSecret }: TokenParamsType): bool
 
 
 /**
- * Get Sirv access token
+ * Get Sirv access token. These last for 20 min before expiring.
  * @param isAdmin determines if we should get admin token
  * @returns access token string
  */
@@ -43,7 +43,7 @@ export const getToken = async (isAdmin: boolean = false): Promise<string|undefin
       }
 
   if (!_validateTokenParams(params)) {
-    console.log('Missing client token/secret')
+    console.log('Missing client token/secret', params)
     return undefined
   }
   const res = await client.post(
@@ -75,4 +75,30 @@ export const remove = async (filename: string, adminToken: string): Promise<stri
   )
   if (res.status >= 200 && res.status <= 204) { return filename }
   throw new Error(`Image API delete() failed.  Status: ${res.status}`)
+}
+
+/**
+ * Upload a photo to Sirv
+ * @param filename
+ * @param imageData
+ * @param token
+ * @returns Full path to the photo
+ */
+export const uploadToSirv = async (filename: string, imageData: Buffer, adminToken: string): Promise<string> => {
+  console.log('[uploadToSirv] Attempting', filename)
+  const res = await client.post(
+    `/files/upload?filename=${filename}`,
+    imageData,
+    {
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': `bearer ${adminToken}`
+      }
+    }
+  )
+  if (res.status >= 200 && res.status <= 204) {
+    console.log('[uploadToSirv] Succeeded')
+    return filename
+  }
+  throw new Error(`Image API upload() failed.  Status: ${res.status}`)
 }

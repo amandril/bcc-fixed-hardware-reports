@@ -1,5 +1,5 @@
 import clientPromise from "../../../lib/mongodb";
-import {generateId} from "../../../lib/utils";
+import {generateId, parseParams, Param, AdditionalValidation } from "../../../lib/utils";
 
 export default async function handler(req, res) {
   const client = await clientPromise;
@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   switch (req.method) {
     case "POST":
       // console.log('[POST /v1/reports] Handling', req.body)
-      const { params, errMsgs } = parseParams(req.body)
+      const { params, errMsgs } = parseParams(req.body, postParams, additionalValidations)
       if (Object.keys(errMsgs).length != 0) {
         res.status(400).json({ error: errMsgs })
         return;
@@ -38,55 +38,6 @@ export default async function handler(req, res) {
       break;
     default:
       res.status(405).json({ error: "This endpoint only supports POST and GET requests."})
-  }
-}
-
-
-// Extracts params from bodyObject, validates values.
-// Extra key-value pairs in BodyObject are ignored.
-function parseParams(bodyObject) {
-  let validatedParams = {};
-  let validationErrMsgs = {};
-  // Param-wise validation.
-  for (let param of postParams) {
-    const value = bodyObject[param.name];
-    if (value === undefined) { // Param missing.
-      if (param.required) { // Required params not ok to be missing.
-        validationErrMsgs[param.name] = "Required parameter missing.";
-      }
-      continue;
-    }
-    if (param.validate(value)) {
-      validatedParams[param.name] = value
-    } else {
-      validationErrMsgs[param.name] = param.validationErrMsg
-    }
-  }
-  // Combination validations.
-  for (let v of additionalValidations) {
-    if (!v.validate(validatedParams)) {
-      validationErrMsgs['additional_errors'] = [
-        ...(validationErrMsgs['additional_errors'] || []), v.errMsg
-      ]
-    }
-  }
-  return {params: validatedParams, errMsgs: validationErrMsgs}
-}
-
-interface Param {
-  name: string,
-  required: boolean,
-  validate: (value: any) => boolean,
-  validationErrMsg: string,
-}
-
-// Describes an API parameter.
-class Param {
-  constructor(data: Param) {
-    this.name = data.name;
-    this.required = data.required;
-    this.validate = data.validate;
-    this.validationErrMsg = data.validationErrMsg;
   }
 }
 
@@ -136,11 +87,6 @@ const postParams = [
     validationErrMsg: "Should be 16 characters or shorter."
   }),
 ]
-
-interface AdditionalValidation {
-  errMsg: string;
-  validate: (paramValues: any) => boolean;
-}
 
 const additionalValidations: AdditionalValidation[] = [
   {
